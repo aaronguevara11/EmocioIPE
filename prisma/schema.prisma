@@ -1,11 +1,124 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model alumnos {
+  dni        Int          @id
+  nombre     String       @db.VarChar(255)
+  apaterno   String       @db.VarChar(255)
+  amaterno   String       @db.VarChar(255)
+  correo     String       @unique @db.VarChar(255)
+  password   String       @db.VarChar(255)
+  numero     Int
+  matriculas matriculas[]
+}
+
+model contenido {
+  id        Int     @id @default(autoincrement())
+  idSubtema Int
+  contenido String? @db.Text
+  subtema   subtema @relation(fields: [idSubtema], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "contenido_ibfk_1")
+
+  @@index([idSubtema], map: "idSubtema")
+}
+
+model docente {
+  dni      Int      @id
+  nombre   String   @db.VarChar(255)
+  apaterno String   @db.VarChar(255)
+  amaterno String   @db.VarChar(255)
+  correo   String   @unique @db.VarChar(255)
+  password String   @db.VarChar(255)
+  numero   Int
+  modulo   modulo[]
+}
+
+model juego {
+  id        Int       @id @default(autoincrement())
+  idMomento Int?
+  nombre    String    @db.VarChar(255)
+  momentos  momentos? @relation(fields: [idMomento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "juego_ibfk_1")
+  nivel     nivel[]
+
+  @@index([idMomento], map: "idMomento")
+}
+
+model matriculas {
+  id        Int     @id @default(autoincrement())
+  dniAlumno Int
+  idModulo  Int
+  estado    String? @default("Matriculado") @db.VarChar(20)
+  alumnos   alumnos @relation(fields: [dniAlumno], references: [dni], onDelete: Cascade, onUpdate: NoAction, map: "matriculas_ibfk_1")
+  modulo    modulo  @relation(fields: [idModulo], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "matriculas_ibfk_2")
+
+  @@index([dniAlumno], map: "dniAlumno")
+  @@index([idModulo], map: "idModulo")
+}
+
+model modulo {
+  id          Int          @id @default(autoincrement())
+  dniDocente  Int
+  nombre      String       @db.VarChar(255)
+  descripcion String       @db.VarChar(255)
+  idMomento   Int
+  matriculas  matriculas[]
+  docente     docente      @relation(fields: [dniDocente], references: [dni], onDelete: Cascade, onUpdate: NoAction, map: "modulo_ibfk_1")
+  momentos    momentos     @relation(fields: [idMomento], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "modulo_ibfk_2")
+  tema        tema[]
+
+  @@index([dniDocente], map: "dniDocente")
+  @@index([idMomento], map: "idMomento")
+}
+
+model momentos {
+  id            Int      @id @default(autoincrement())
+  nombre        String   @db.VarChar(255)
+  numeroMomento Int      @unique
+  juego         juego[]
+  modulo        modulo[]
+}
+
+model nivel {
+  id       Int        @id @default(autoincrement())
+  idJuego  Int?
+  nombre   String?    @db.VarChar(255)
+  juego    juego?     @relation(fields: [idJuego], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "nivel_ibfk_1")
+  pregunta pregunta[]
+
+  @@index([idJuego], map: "idJuego")
+}
+
+model pregunta {
+  id       Int     @id @default(autoincrement())
+  idNivel  Int?
+  pregunta String? @db.VarChar(255)
+  nivel    nivel?  @relation(fields: [idNivel], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pregunta_ibfk_1")
+
+  @@index([idNivel], map: "idNivel")
+}
+
+model subtema {
+  id          Int         @id @default(autoincrement())
+  idTema      Int
+  titulo      String      @db.VarChar(255)
+  descripcion String?     @db.VarChar(255)
+  contenido   contenido[]
+  tema        tema        @relation(fields: [idTema], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "subtema_ibfk_1")
+
+  @@index([idTema], map: "idTema")
+}
+
+model tema {
+  id       Int       @id @default(autoincrement())
+  titulo   String    @db.VarChar(255)
+  idModulo Int
+  subtema  subtema[]
+  modulo   modulo    @relation(fields: [idModulo], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tema_ibfk_1")
+
+  @@index([idModulo], map: "idModulo")
 }
