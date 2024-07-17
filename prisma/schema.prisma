@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -18,34 +18,14 @@ model alumnos {
   matriculas matriculas[]
 }
 
-model contenido {
-  id        Int     @id @default(autoincrement())
-  idSubtema Int
-  contenido String? @db.Text
-  subtema   subtema @relation(fields: [idSubtema], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "contenido_ibfk_1")
-
-  @@index([idSubtema], map: "idSubtema")
-}
-
 model docente {
-  dni      Int      @id
-  nombre   String   @db.VarChar(255)
-  apaterno String   @db.VarChar(255)
-  amaterno String   @db.VarChar(255)
-  correo   String   @unique @db.VarChar(255)
-  password String   @db.VarChar(255)
+  dni      Int    @id
+  nombre   String @db.VarChar(255)
+  apaterno String @db.VarChar(255)
+  amaterno String @db.VarChar(255)
+  correo   String @unique @db.VarChar(255)
+  password String @db.VarChar(255)
   numero   Int
-  modulo   modulo[]
-}
-
-model juego {
-  id        Int       @id @default(autoincrement())
-  idMomento Int?
-  nombre    String    @db.VarChar(255)
-  momentos  momentos? @relation(fields: [idMomento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "juego_ibfk_1")
-  nivel     nivel[]
-
-  @@index([idMomento], map: "idMomento")
 }
 
 model matriculas {
@@ -54,71 +34,48 @@ model matriculas {
   idModulo  Int
   estado    String? @default("Matriculado") @db.VarChar(20)
   alumnos   alumnos @relation(fields: [dniAlumno], references: [dni], onDelete: Cascade, onUpdate: NoAction, map: "matriculas_ibfk_1")
-  modulo    modulo  @relation(fields: [idModulo], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "matriculas_ibfk_2")
 
   @@index([dniAlumno], map: "dniAlumno")
   @@index([idModulo], map: "idModulo")
 }
 
-model modulo {
-  id          Int          @id @default(autoincrement())
-  dniDocente  Int
-  nombre      String       @db.VarChar(255)
-  descripcion String       @db.VarChar(255)
-  idMomento   Int
-  matriculas  matriculas[]
-  docente     docente      @relation(fields: [dniDocente], references: [dni], onDelete: Cascade, onUpdate: NoAction, map: "modulo_ibfk_1")
-  momentos    momentos     @relation(fields: [idMomento], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "modulo_ibfk_2")
-  tema        tema[]
-
-  @@index([dniDocente], map: "dniDocente")
-  @@index([idMomento], map: "idMomento")
+model res_emotiQuiz {
+  id         Int     @id @default(autoincrement())
+  pregunta1  String? @db.Text
+  respuesta1 String? @db.Text
+  pregunta2  String? @db.Text
+  respuesta2 String? @db.Text
+  pregunta3  String? @db.Text
+  respuesta3 String? @db.Text
+  pregunta4  String? @db.Text
+  respuesta4 String? @db.Text
+  pregunta5  String? @db.Text
+  respuesta5 String? @db.Text
+  pregunta6  String? @db.Text
+  respuesta6 String? @db.Text
+  dniAlumno  Int?
+  nombre     String? @db.VarChar(25)
+  apaterno   String? @db.VarChar(25)
+  idNivel    Int?
 }
 
-model momentos {
-  id            Int      @id @default(autoincrement())
-  nombre        String   @db.VarChar(255)
-  numeroMomento Int      @unique
-  juego         juego[]
-  modulo        modulo[]
+model res_emotiMatch {
+  id        Int     @id @default(autoincrement())
+  respuesta String? @db.VarChar(255)
+  idNivel   Int?
+  dniAlumno Int?
+  nombre    String? @db.VarChar(25)
+  apaterno  String? @db.VarChar(25)
 }
 
-model nivel {
-  id       Int        @id @default(autoincrement())
-  idJuego  Int?
-  nombre   String?    @db.VarChar(255)
-  juego    juego?     @relation(fields: [idJuego], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "nivel_ibfk_1")
-  pregunta pregunta[]
-
-  @@index([idJuego], map: "idJuego")
-}
-
-model pregunta {
-  id       Int     @id @default(autoincrement())
-  idNivel  Int?
-  pregunta String? @db.VarChar(255)
-  nivel    nivel?  @relation(fields: [idNivel], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pregunta_ibfk_1")
-
-  @@index([idNivel], map: "idNivel")
-}
-
-model subtema {
-  id          Int         @id @default(autoincrement())
-  idTema      Int
-  titulo      String      @db.VarChar(255)
-  descripcion String?     @db.VarChar(255)
-  contenido   contenido[]
-  tema        tema        @relation(fields: [idTema], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "subtema_ibfk_1")
-
-  @@index([idTema], map: "idTema")
-}
-
-model tema {
-  id       Int       @id @default(autoincrement())
-  titulo   String    @db.VarChar(255)
-  idModulo Int
-  subtema  subtema[]
-  modulo   modulo    @relation(fields: [idModulo], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tema_ibfk_1")
-
-  @@index([idModulo], map: "idModulo")
+model res_comunicacion {
+  id         Int     @id @default(autoincrement())
+  pregunta1  String? @db.Text
+  respuesta1 String? @db.Text
+  pregunta2  String? @db.Text
+  respuesta2 String? @db.Text
+  dniAlumno  Int?
+  nombre     String? @db.VarChar(30)
+  apaterno   String? @db.VarChar(30)
+  idNivel    Int?
 }
