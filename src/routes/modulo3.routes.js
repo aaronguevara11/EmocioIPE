@@ -7,7 +7,7 @@ const prisma = new PrismaClient({
   log: ["query"],
 });
 
-router.get("/verRespuestas", async (req, res) => {
+router.get("/verRespuesta", async (req, res) => {
   try {
     const token = req.header("Authorization");
     jwt.verify(token, process.env.JWT_KEY, async (err, payload) => {
@@ -17,22 +17,20 @@ router.get("/verRespuestas", async (req, res) => {
         });
       } else {
         const { idNivel } = req.body;
-
-        const docentes = await prisma.res_emotiMatch.findMany({
+        const respuestas = await prisma.res_modulo3.findMany({
           where: {
-            idNivel: idNivel,
+            idNivel,
           },
         });
         res.json({
-          message: "Respuestas: ",
-          respuestas: docentes,
+          respuestas: respuestas,
         });
       }
     });
   } catch (e) {
-    console.log(e);
-    res.json({
-      message: "Error",
+    console.error(e);
+    res.status(500).json({
+      message: "Error en el servidor",
     });
   }
 });
@@ -46,52 +44,20 @@ router.post("/enviarRespuesta", async (req, res) => {
           message: "Error en el token",
         });
       } else {
-        const { idNivel } = req.body;
-        const idAlumno = payload.dni;
+        const { idNivel, respuesta } = req.body;
         const nombre = payload.nombre;
         const apaterno = payload.apaterno;
 
-        await prisma.res_emotiMatch.create({
+        await prisma.res_modulo3.create({
           data: {
             idNivel: idNivel,
-            respuesta: "Enviado",
-            dniAlumno: Number(idAlumno),
+            respuesta: respuesta,
             nombre: nombre,
             apaterno: apaterno,
           },
         });
         res.json({
           message: "Respuesta enviada",
-        });
-      }
-    });
-  } catch (e) {
-    console.log(e);
-    res.json({
-      message: "Error",
-    });
-  }
-});
-
-router.delete("/eliminarRespuesta", async (req, res) => {
-  try {
-    const token = req.header("Authorization");
-    jwt.verify(token, process.env.JWT_KEY, async (err, payload) => {
-      if (err) {
-        res.json({
-          message: "Error en el token",
-        });
-      } else {
-        const { id } = req.body;
-
-        const borrar = await prisma.res_emotiMatch.delete({
-          where: {
-            id: Number(id),
-          },
-        });
-
-        res.json({
-          message: "Respuesta borrada con éxito",
         });
       }
     });

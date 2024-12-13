@@ -8,14 +8,13 @@ datasource db {
 }
 
 model alumnos {
-  dni        Int          @id
-  nombre     String       @db.VarChar(255)
-  apaterno   String       @db.VarChar(255)
-  amaterno   String       @db.VarChar(255)
-  correo     String       @unique @db.VarChar(255)
-  password   String       @db.VarChar(255)
-  numero     Int
-  matriculas matriculas[]
+  dni      Int    @id
+  nombre   String @db.VarChar(255)
+  apaterno String @db.VarChar(255)
+  amaterno String @db.VarChar(255)
+  correo   String @unique @db.VarChar(255)
+  password String @db.VarChar(255)
+  numero   Int
 }
 
 model docente {
@@ -28,54 +27,74 @@ model docente {
   numero   Int
 }
 
-model matriculas {
-  id        Int     @id @default(autoincrement())
-  dniAlumno Int
-  idModulo  Int
-  estado    String? @default("Matriculado") @db.VarChar(20)
-  alumnos   alumnos @relation(fields: [dniAlumno], references: [dni], onDelete: Cascade, onUpdate: NoAction, map: "matriculas_ibfk_1")
-
-  @@index([dniAlumno], map: "dniAlumno")
-  @@index([idModulo], map: "idModulo")
-}
-
 model res_emotiQuiz {
   id         Int     @id @default(autoincrement())
-  pregunta1  String? @db.Text
+  idNivel    Int?
   respuesta1 String? @db.Text
-  pregunta2  String? @db.Text
   respuesta2 String? @db.Text
-  pregunta3  String? @db.Text
   respuesta3 String? @db.Text
-  pregunta4  String? @db.Text
-  respuesta4 String? @db.Text
-  pregunta5  String? @db.Text
-  respuesta5 String? @db.Text
-  pregunta6  String? @db.Text
-  respuesta6 String? @db.Text
-  dniAlumno  Int?
   nombre     String? @db.VarChar(25)
   apaterno   String? @db.VarChar(25)
-  idNivel    Int?
-}
-
-model res_emotiMatch {
-  id        Int     @id @default(autoincrement())
-  respuesta String? @db.VarChar(255)
-  idNivel   Int?
-  dniAlumno Int?
-  nombre    String? @db.VarChar(25)
-  apaterno  String? @db.VarChar(25)
 }
 
 model res_comunicacion {
-  id         Int     @id @default(autoincrement())
-  pregunta1  String? @db.Text
-  respuesta1 String? @db.Text
-  pregunta2  String? @db.Text
-  respuesta2 String? @db.Text
-  dniAlumno  Int?
-  nombre     String? @db.VarChar(30)
-  apaterno   String? @db.VarChar(30)
-  idNivel    Int?
+  id        Int     @id @default(autoincrement())
+  idNivel   Int?
+  respuesta String? @db.Text
+  nombre    String? @db.VarChar(30)
+  apaterno  String? @db.VarChar(30)
+}
+
+model res_trabajo {
+  id        Int     @id @default(autoincrement())
+  idNivel   Int?
+  respuesta String? @db.Text
+  nombre    String? @db.VarChar(30)
+  apaterno  String? @db.VarChar(30)
+}
+
+model res_liderazgo {
+  id        Int     @id @default(autoincrement())
+  idNivel   Int?
+  respuesta String? @db.Text
+  nombre    String? @db.VarChar(30)
+  apaterno  String? @db.VarChar(30)
+}
+
+model res_resolucion {
+  id        Int     @id @default(autoincrement())
+  idNivel   Int?
+  respuesta String? @db.Text
+  nombre    String? @db.VarChar(30)
+  apaterno  String? @db.VarChar(30)
+}
+
+model res_modulo3 {
+  id        Int     @id @default(autoincrement())
+  idNivel   Int?
+  respuesta String? @db.Text
+  nombre    String? @db.VarChar(30)
+  apaterno  String? @db.VarChar(30)
+}
+
+model res_actua {
+  id        Int     @id @default(autoincrement())
+  idNivel   Int?
+  emocion   String? @db.Text
+  respuesta String? @db.Text
+  nombre    String? @db.VarChar(30)
+  apaterno  String? @db.VarChar(30)
+}
+
+model res_ordenalo {
+  id       Int     @id @default(autoincrement())
+  idNivel  Int?
+  orden1   String? @db.Text
+  orden2   String? @db.Text
+  orden3   String? @db.Text
+  orden4   String? @db.Text
+  orden5   String? @db.Text
+  estado   String? @db.Text
+  nombre   String? @db.VarChar(30)
+  apaterno String? @db.VarChar(30)
 }
