@@ -298,7 +298,7 @@ router.put("/alumnoRestablecer", async (req, res) => {
     }
   } catch {
     res.json({
-      message: "error",
+      message: "error al restablecer",
     });
   }
 });
