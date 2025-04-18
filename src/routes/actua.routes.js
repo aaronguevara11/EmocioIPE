@@ -17,7 +17,7 @@ router.get("/verRespuesta", async (req, res) => {
         });
       } else {
         const { idNivel } = req.body;
-        const respuestas = await prisma.res_comunicacion.findMany({
+        const respuestas = await prisma.res_actua.findMany({
           where: {
             idNivel,
           },
@@ -51,8 +51,8 @@ router.post("/enviarRespuesta", async (req, res) => {
         await prisma.res_actua.create({
           data: {
             idNivel: idNivel,
-            respuesta: respuesta,
             emocion: emocion,
+            respuesta: respuesta,
             nombre: nombre,
             apaterno: apaterno,
           },
