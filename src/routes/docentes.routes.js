@@ -186,7 +186,7 @@ router.put("/loginDocentes", async (req, res) => {
       });
     } else {
       const token = jwt.sign(respuesta, process.env.JWT_KEY, {
-        expiresIn: 3600,
+        expiresIn: 360000,
       });
       res.json({
         message: "Loggeo exitoso",
