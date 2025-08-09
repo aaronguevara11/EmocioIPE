@@ -6,6 +6,7 @@ const router = Router();
 const prisma = new PrismaClient({
   log: ["query"],
 });
+print("hola");
 
 router.get("/verRespuesta", async (req, res) => {
   try {
